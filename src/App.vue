@@ -1,21 +1,23 @@
 <script>
-  import Homepage from './home/Homepage.vue'
-  import RobotBuilder from "@/build/RobotBuilder.vue";
+import Homepage from './home/Homepage.vue'
+import RobotBuilder from "@/build/RobotBuilder.vue";
+import ProductSearch from "@/search/ProductSearch.vue";
 
-  export default {
-    name: 'App',
-    components: {
-      Homepage,
-      RobotBuilder
-    }
+export default {
+  name: 'App',
+  components: {
+    ProductSearch,
+    Homepage,
+    RobotBuilder
   }
+}
 </script>
 
 <template>
   <main>
-      <Homepage msg="Robobuilder"/>
-      <HomepageGlobal msg="Global Robobuilder"/>
-    <RobotBuilder />
+    <!-- <HomepageGlobal msg="Global Robobuilder"/> -->
+    <!-- <RobotBuilder/> -->
+    <ProductSearch />
   </main>
 
 </template>

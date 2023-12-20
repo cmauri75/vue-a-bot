@@ -1,61 +1,78 @@
-<script setup>
-import {computed, onMounted, ref} from "vue";
+<script>
+import {computed, ref} from "vue";
 import parts from "@/data/parts.js";
 import {toCurrency} from "@/shared/formatters.js";
 
-onMounted(() => {
-  console.log('Component mounted');
-})
+export default {
+  name: 'RobotBuilder',
+  setup() {
+    function getPrevCycleIndex(index, maxIdx) {
+      if (index == 0) {
+        index = maxIdx;
+      }
+      return index - 1;
+    }
 
-function getPrevCycleIndex(index, maxIdx) {
-  if (index == 0) {
-    index = maxIdx;
+    function getNextCycleIndex(index, maxIdx) {
+      if (index == maxIdx - 1) {
+        index = -1;
+      }
+      return index + 1;
+    }
+
+    const availableParts = parts;
+    const selectedHeadIndex = ref(0);
+    const selectedLeftArmIndex = ref(0);
+    const selectedTorsoIndex = ref(0);
+    const selectedRightHandIndex = ref(0);
+    const selectedBottomIndex = ref(0);
+    const cart = [];
+
+    const selectedRobot = computed(()=>({
+      head: availableParts.heads[selectedHeadIndex.value],
+      leftArm: availableParts.heads[selectedLeftArmIndex.value],
+      torso: availableParts.heads[selectedTorsoIndex.value],
+      rightArm: availableParts.heads[selectedRightHandIndex.value],
+      bottom: availableParts.heads[selectedBottomIndex.value],
+    }));
+
+    function selectObj(idx, len, nextOrPrev) {
+      if (nextOrPrev)
+        return getPrevCycleIndex(idx, len);
+      else
+        return getNextCycleIndex(idx, len);
+    };
+
+    function addToCart() {
+      const robot = selectedRobot.value;
+      const cost = robot.head.cost +
+        robot.leftArm.cost +
+        robot.torso.cost +
+        robot.rightArm.cost +
+        robot.bottom.cost;
+      cart.push({...robot, cost});
+      console.log(cart);
+    };
+
+    return {
+      availableParts,
+      selectedHeadIndex,
+      selectedLeftArmIndex,
+      selectedTorsoIndex,
+      selectedRightHandIndex,
+      selectedBottomIndex,
+      cart,
+
+      selectedRobot,
+
+      toCurrency,
+
+      selectObj,
+      addToCart
+
+    };
   }
-  return index - 1;
 }
-
-function getNextCycleIndex(index, maxIdx) {
-  if (index == maxIdx - 1) {
-    index = -1;
-  }
-  return index + 1;
-}
-
-const availableParts = parts;
-const selectedHeadIndex = ref(0);
-const selectedLeftArmIndex = ref(0);
-const selectedTorsoIndex = ref(0);
-const selectedRightHandIndex = ref(0);
-const selectedBottomIndex = ref(0);
-const cart = ref([]);
-
-const selectedRobot = computed(() => ({
-  head: availableParts.heads[selectedHeadIndex.value],
-  leftArm: availableParts.heads[selectedLeftArmIndex.value],
-  torso: availableParts.heads[selectedTorsoIndex.value],
-  rightArm: availableParts.heads[selectedRightHandIndex.value],
-  bottom: availableParts.heads[selectedBottomIndex.value],
-}));
-
-function selectObj(idx, len, nextOrPrev) {
-  if (nextOrPrev)
-    return getPrevCycleIndex(idx, len);
-  else
-    return getNextCycleIndex(idx, len);
-};
-
-function addToCart() {
-  const robot = selectedRobot.value;
-  const cost = robot.head.cost +
-    robot.leftArm.cost +
-    robot.torso.cost +
-    robot.rightArm.cost +
-    robot.bottom.cost;
-  cart.value.push({...robot, cost});
-  console.log(cart.value);
-}
-
-console.log("component created");
 </script>
 
 <template>
@@ -63,12 +80,9 @@ console.log("component created");
     <button class="add-to-cart" @click="addToCart()">Add to cart</button>
     <div class="top-row">
       <div class="top part">
-
         <div class="robot-name">{{ selectedRobot.head.title }}
-          <span class="sale" v-show="selectedRobot.head.onSale">sale!</span>
-        </div>
+          <span class="sale" v-show="selectedRobot.head.onSale">sale!</span></div>
         <img :src="selectedRobot.head.imageUrl" alt="head"/>
-
         <button class="prev-selector"
                 @click="selectedHeadIndex=selectObj(selectedHeadIndex, availableParts.heads.length, true)">
           &#9668;

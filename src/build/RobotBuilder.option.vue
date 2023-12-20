@@ -1,11 +1,7 @@
-<script setup>
-import {computed, onMounted, ref} from "vue";
+<script>
 import parts from "@/data/parts.js";
 import {toCurrency} from "@/shared/formatters.js";
-
-onMounted(() => {
-  console.log('Component mounted');
-})
+import createHook from './created-hook-mixin.js'
 
 function getPrevCycleIndex(index, maxIdx) {
   if (index == 0) {
@@ -21,41 +17,53 @@ function getNextCycleIndex(index, maxIdx) {
   return index + 1;
 }
 
-const availableParts = parts;
-const selectedHeadIndex = ref(0);
-const selectedLeftArmIndex = ref(0);
-const selectedTorsoIndex = ref(0);
-const selectedRightHandIndex = ref(0);
-const selectedBottomIndex = ref(0);
-const cart = ref([]);
-
-const selectedRobot = computed(() => ({
-  head: availableParts.heads[selectedHeadIndex.value],
-  leftArm: availableParts.heads[selectedLeftArmIndex.value],
-  torso: availableParts.heads[selectedTorsoIndex.value],
-  rightArm: availableParts.heads[selectedRightHandIndex.value],
-  bottom: availableParts.heads[selectedBottomIndex.value],
-}));
-
-function selectObj(idx, len, nextOrPrev) {
-  if (nextOrPrev)
-    return getPrevCycleIndex(idx, len);
-  else
-    return getNextCycleIndex(idx, len);
-};
-
-function addToCart() {
-  const robot = selectedRobot.value;
-  const cost = robot.head.cost +
-    robot.leftArm.cost +
-    robot.torso.cost +
-    robot.rightArm.cost +
-    robot.bottom.cost;
-  cart.value.push({...robot, cost});
-  console.log(cart.value);
+export default {
+  name: 'RobotBuilder',
+  data() {
+    return {
+      availableParts: parts,
+      selectedHeadIndex: 0,
+      selectedLeftArmIndex: 0,
+      selectedTorsoIndex: 0,
+      selectedRightHandIndex: 0,
+      selectedBottomIndex: 0,
+      cart: []
+    };
+  },
+  methods: {
+    selectObj(idx, len, nextOrPrev) {
+      if (nextOrPrev)
+        return getPrevCycleIndex(idx, len);
+      else
+        return getNextCycleIndex(idx, len);
+    },
+    addToCart() {
+      const robot = this.selectedRobot;
+      const cost = robot.head.cost +
+        robot.leftArm.cost +
+        robot.torso.cost +
+        robot.rightArm.cost +
+        robot.bottom.cost;
+      this.cart.push({...robot, cost});
+    },
+    toCurrency,
+  },
+  computed: {
+    selectedRobot() {
+      return {
+        head: this.availableParts.heads[this.selectedHeadIndex],
+        leftArm: this.availableParts.heads[this.selectedLeftArmIndex],
+        torso: this.availableParts.heads[this.selectedTorsoIndex],
+        rightArm: this.availableParts.heads[this.selectedRightHandIndex],
+        bottom: this.availableParts.heads[this.selectedBottomIndex],
+      }
+    }
+  },
+  mixins: [createHook],
+  mounted() {
+    console.log('Componenet mounted');
+  },
 }
-
-console.log("component created");
 </script>
 
 <template>
@@ -63,18 +71,15 @@ console.log("component created");
     <button class="add-to-cart" @click="addToCart()">Add to cart</button>
     <div class="top-row">
       <div class="top part">
-
         <div class="robot-name">{{ selectedRobot.head.title }}
-          <span class="sale" v-show="selectedRobot.head.onSale">sale!</span>
-        </div>
+          <span class="sale" v-show="selectedRobot.head.onSale">sale!</span></div>
         <img :src="selectedRobot.head.imageUrl" alt="head"/>
-
         <button class="prev-selector"
-                @click="selectedHeadIndex=selectObj(selectedHeadIndex, availableParts.heads.length, true)">
+                @click="this.selectedHeadIndex=selectObj(this.selectedHeadIndex, this.availableParts.heads.length, true)">
           &#9668;
         </button>
         <button class="next-selector"
-                @click="selectedHeadIndex=selectObj(selectedHeadIndex, availableParts.heads.length, false)">
+                @click="this.selectedHeadIndex=selectObj(this.selectedHeadIndex, this.availableParts.heads.length, false)">
           &#9658;
         </button>
       </div>
@@ -83,33 +88,33 @@ console.log("component created");
       <div class="left part">
         <img v-bind:src="availableParts.arms[selectedLeftArmIndex].imageUrl" alt="left arm"/>
         <button class="prev-selector"
-                v-on:click="selectedLeftArmIndex=selectObj(selectedLeftArmIndex, availableParts.arms.length, true)">
+                v-on:click="this.selectedLeftArmIndex=selectObj(this.selectedLeftArmIndex, this.availableParts.arms.length, true)">
           &#9650;
         </button>
         <button class="next-selector"
-                v-on:click="selectedLeftArmIndex=selectObj(selectedLeftArmIndex, availableParts.arms.length, false)">
+                v-on:click="this.selectedLeftArmIndex=selectObj(this.selectedLeftArmIndex, this.availableParts.arms.length, false)">
           &#9660;
         </button>
       </div>
       <div class="center part">
         <img v-bind:src="availableParts.torsos[selectedTorsoIndex].imageUrl" alt="torso"/>
         <button class="prev-selector"
-                v-on:click="selectedTorsoIndex=selectObj(selectedTorsoIndex, availableParts.torsos.length, true)">
+                v-on:click="this.selectedTorsoIndex=selectObj(this.selectedTorsoIndex, this.availableParts.torsos.length, true)">
           &#9668;
         </button>
         <button class="next-selector"
-                v-on:click="selectedTorsoIndex=selectObj(selectedTorsoIndex, availableParts.torsos.length, false)">
+                v-on:click="this.selectedTorsoIndex=selectObj(this.selectedTorsoIndex, this.availableParts.torsos.length, false)">
           &#9658;
         </button>
       </div>
       <div class="right part">
         <img v-bind:src="availableParts.arms[selectedRightHandIndex].imageUrl" alt="right arm"/>
         <button class="prev-selector"
-                v-on:click="selectedRightHandIndex=selectObj(selectedRightHandIndex, availableParts.arms.length, true)">
+                v-on:click="this.selectedRightHandIndex=selectObj(this.selectedRightHandIndex, this.availableParts.arms.length, true)">
           &#9650;
         </button>
         <button class="next-selector"
-                v-on:click="selectedRightHandIndex=selectObj(selectedRightHandIndex, availableParts.arms.length, false)">
+                v-on:click="this.selectedRightHandIndex=selectObj(this.selectedRightHandIndex, this.availableParts.arms.length, false)">
           &#9660;
         </button>
       </div>
@@ -118,11 +123,11 @@ console.log("component created");
       <div class="bottom part">
         <img v-bind:src="availableParts.bases[selectedBottomIndex].imageUrl" alt="base"/>
         <button class="prev-selector"
-                v-on:click="selectedBottomIndex=selectObj(selectedBottomIndex, availableParts.bases.length, true)">
+                v-on:click="this.selectedBottomIndex=selectObj(this.selectedBottomIndex, this.availableParts.bases.length, true)">
           &#9668;
         </button>
         <button class="next-selector"
-                v-on:click="selectedBottomIndex=selectObj(selectedBottomIndex, availableParts.bases.length, false)">
+                v-on:click="this.selectedBottomIndex=selectObj(this.selectedBottomIndex, this.availableParts.bases.length, false)">
           &#9658;
         </button>
       </div>
