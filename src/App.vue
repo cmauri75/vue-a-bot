@@ -1,10 +1,21 @@
-<script setup>
-import Homepage from './components/Homepage.vue'
+<script>
+  import Homepage from './home/Homepage.vue'
+  import RobotBuilder from "@/build/RobotBuilder.vue";
+
+  export default {
+    name: 'App',
+    components: {
+      Homepage,
+      RobotBuilder
+    }
+  }
 </script>
 
 <template>
   <main>
-      <Homepage msg="You did it!"/>
+      <Homepage msg="Robobuilder"/>
+      <HomepageGlobal msg="Global Robobuilder"/>
+    <RobotBuilder />
   </main>
 
 </template>
