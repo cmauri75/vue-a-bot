@@ -60,6 +60,30 @@ Due visibilità:
 ### Form
 * L'accesso ai valori in una textbox la ottengo con ``@input="myVal = $event.target.value" />`` myVal deve essere un ref
 
+### Styling
+* style scoped --> Gli stili possono essere scoped e allora si applicano solo all'interno del componente, se non specifico sono globali ma non dovrebbe essere mai usato se non nel componente padre che include gli altri
+* >>> --> Ad uno stile scoped posso aggiungere >>> questo si chiama deep selector e permette di estendere lo stile anche ai figli
+* :style="" --> Posso assegnare stili in modo dinamico con :style="", all'interno posso mettere javascript o meglio una computed property. 
+* :class --> Con :class={ 'classe': booleanFunction} posso assegnare dinamicamente uno stile. Posso anche passare un array con gli stili da applicare.
+* v-bind --> lo aggiungo direttamente nello stile in modo da modificare i css 
+
+## Comunicazione tra componenti
+* nel momento in cui ho componenti molto complessi posso spezzarli in sotto-parti, nel nostro esempio è evidente che un sottocomponente è il selettore della parte di robot
+  * mi basta crearlo e importarlo, non serve registrarlo come fatto per quelli alla radice
+* Il passaggio di variabili avviene definendo un tag custom (con prefisso : se sono espressioni, senza se è hardcoded), all'interno del componente uso defineProps(). Si tratta di una macro che non va dichiarata.
+  * NB: posso passare ad defineProps un oggetto al posto di un array di stringhe, in questo modo posso definire il tipo degli oggetti che si aspetta di ricevere. Ma la validazione avviene comunque runtime
+  * Con l'oggetto posso definire anche un default, required e dei validatori
+* I dati di ritorno si passano usando gli events. Si dichiarano con defineEmits, macro come il fratello defineProps
+  * Il padre deve sottoscriversi agli eventi nel momento in cui crea il figlio, usando il v-on, ho un evento custom che funziona come quelli built-in
+  * Il figlio emette un evento tra quelli dichiarati, può agganciarci degli oggetti che viaggeranno con l'evento stesso.
+  * L'inizializzazione posso farla direttamente nel setup, definiti emit e props.
+  * NB: Posso usare l'hook onUpdate che viene invocato ogni volta cambia lo stato del componente per emettere il mio evento, così non devo fare un controllo fine nel punto in cui la modifica viene effettuata ma comunico ad ogni change.
+* Se ho una catena di componenti passare variabili ed eventi può essere pesante
+  * Per il passaggio di oggetti uso provide: {} nel padre e inject nel figlio, passo un oggetto direttamente da un ancestor ad un nipote
+* Posso avere componenti che contengono al loro interno HTMl, viene passato come parametro. Ae: un componente che rende collassabile il contenuto. L'html verrà reso al posto dell'elemento <slot> presente nel componente figlio.
+  * Il contenuto di slot verrà reso come default se non viene passato nulla dentro il componente quando viene utilizzato.
+  * Posso avere più slot nel componente, per differenziarli uso l'attributo "name". Quello di default è quello senza name, queli aggiuntivi li definisco tramite il tag <template v-slot:name>
+  * Posso iniettare html nei sub-componenti anche utilizzando il tag <Teleport>, è meno utilizzato ma esiste.
 ## Project Setup
 
 ```sh

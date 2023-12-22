@@ -9,15 +9,24 @@ export default {
     ProductSearch,
     Homepage,
     RobotBuilder
+  },
+  data() {
+    return {
+      user: {username: 'John'},
+    }
+  },
+  provide() {
+    return {user: this.user}
   }
 }
 </script>
 
 <template>
   <main>
+    <div>Username: {{user.username}}</div>
     <!-- <HomepageGlobal msg="Global Robobuilder"/> -->
-    <!-- <RobotBuilder/> -->
-    <ProductSearch />
+    <RobotBuilder/>
+    <!-- <ProductSearch /> -->
   </main>
 
 </template>
