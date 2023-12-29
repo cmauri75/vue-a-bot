@@ -1,5 +1,5 @@
 <script setup>
-import {computed, ref, onUpdated, inject} from 'vue';
+import {computed, inject, onUpdated, ref} from 'vue';
 
 //const props = defineProps(['parts','position'])
 const props = defineProps({
@@ -15,10 +15,13 @@ const user = inject('user');
 const emit = defineEmits(['partSelected']);
 const selectedPartIndex = ref(0);
 const selectedPart = computed(() => props.parts[selectedPartIndex.value]);
-emit('partSelected',selectedPart);
+emit('partSelected', selectedPart);
 
 
-onUpdated(() => {console.log(selectedPart);emit('partSelected',selectedPart)});
+onUpdated(() => {
+  console.log(selectedPart);
+  emit('partSelected', selectedPart)
+});
 
 function getPreviousValidIndex(index, length) {
   const deprecatedIndex = index - 1;
@@ -52,8 +55,9 @@ const headBorderStyle = computed(() => ({border: selectedPart.value.onSale ? '3p
 
 <template>
   <div class="part" :class="position" :style="headBorderStyle">
-    <div>user: {{user.username}}</div>
-    <img :src="selectedPart.imageUrl" alt="part"/>
+    <div>user: {{ user.username }}</div>
+    <router-link :to="{name:'Parts', params: {partType: selectedPart.type, id: selectedPart.id} }">
+      <img :src="selectedPart.imageUrl" alt="part"/></router-link>
     <button @click="selectPreviousPart()" class="prev-selector"></button>
     <button @click="selectNextPart()" class="next-selector"></button>
     <span class="sale" v-show="selectedPart.onSale">Sale!</span>

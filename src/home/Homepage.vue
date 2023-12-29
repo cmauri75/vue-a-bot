@@ -11,6 +11,9 @@ defineProps({
   <div class="greetings">
     <h1 class="green">{{ msg }}</h1>
   </div>
+  <div class="green">
+    <router-link to="/build">Get started</router-link>
+  </div>
 </template>
 
 <style scoped>

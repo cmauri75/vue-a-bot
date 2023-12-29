@@ -84,6 +84,20 @@ Due visibilità:
   * Il contenuto di slot verrà reso come default se non viene passato nulla dentro il componente quando viene utilizzato.
   * Posso avere più slot nel componente, per differenziarli uso l'attributo "name". Quello di default è quello senza name, queli aggiuntivi li definisco tramite il tag <template v-slot:name>
   * Posso iniettare html nei sub-componenti anche utilizzando il tag <Teleport>, è meno utilizzato ma esiste.
+  
+## Routing e navigation
+Il routing server per navigare tra varie pagine, cambiando l'url nel browser.
+* Per utilizzarlo devo installare il componente vue-route e nel main.js dichiarare il .use(router), il router è una directory che contiene file js dove definisco le mie rotte e la configurazione del componente
+* Una volta definito <route-view/> mostrerà il componente associato alla rotta corrente
+* I link tra le rotte le creo con <router-link>, usando "to: path" oppure ":to obj", nell'obj posso usare ad esempio il nome della rotta
+* I link avranno in automatico lo stile ".nav-link" quello uguale all'url corrente avrà in più la classe ".router-link-active" 
+  * Se voglio usare una classe specifica uso: "linkActiveClass" dentro a createRouter
+  * Volendo ho anche l'attributo active-class che posso specificare elemento per elemento
+* Il route può avere anche parametri. In dichiarazione li dichiaro anteponendo ":", nel route-link uso il tag "params". Per l'utilizzo ho l'oggetto useRoute.params
+  * Posso anche passare i parametri come props ("props: true" in dichiarazione) semplificandone l'utilizzo via "defineProps"
+* Nell'url tutto ciò che va dopo lo # non viene inviato al server ma gestito lato client. Questo ha un side-effect con la SEO, se uso in setup createWebHistory ho url tradizionali.
+  * Il metodo tradizionale per funzionare ha bisogno che in fase di prod il server (nginx, apache, ...) torni sempre il contenuto di "/" a prescindere dall'url richiesto.
+* 
 ## Project Setup
 
 ```sh
