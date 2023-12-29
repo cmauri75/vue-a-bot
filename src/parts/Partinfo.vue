@@ -1,7 +1,7 @@
 <script setup>
 import {computed} from "vue";
-import parts from "@/data/parts.js";
-import {useRoute} from "vue-router";
+//import parts from "@/data/parts.js";
+//import {useRoute} from "vue-router";
 
 const props = defineProps(['partType','id'])
 const part = computed(() => {

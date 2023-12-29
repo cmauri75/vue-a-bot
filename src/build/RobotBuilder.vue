@@ -1,13 +1,17 @@
 <script setup>
-import PartSelector from "@/build/PartSelector.vue";
 import {ref} from "vue";
-import parts from "@/data/parts.js";
-import {toCurrency} from "@/shared/formatters.js";
+
 import CollapsableSection from "@/shared/CollapsableSection.vue";
+import PartSelector from "@/build/PartSelector.vue";
 
+import {toCurrency} from "@/shared/formatters.js";
 
-const availableParts = parts;
-const cart = ref([]);
+import {usePartStore} from "@/stores/partStore.js";
+const partStore = usePartStore();
+partStore.getParts();
+
+import {useCartStore} from "@/stores/cartStore.js";
+const cartStore = useCartStore();
 
 const selectedRobot = ref(({
   head: {},
@@ -24,14 +28,15 @@ function addToCart() {
     robot.torso.cost +
     robot.rightArm.cost +
     robot.bottom.cost;
-  cart.value.push({...robot, cost});
+  cartStore.cart.push({...robot, cost});
+  cartStore.lastRobotCost = cost;
 }
 
 console.log("component created");
 </script>
 
 <template>
-  <div class="content">
+  <div class="content" v-if="partStore.parts">
     <div class="preview">
       <CollapsableSection>
         <template v-slot:collapse>&#x25B2; Hide</template>
@@ -56,40 +61,22 @@ console.log("component created");
       <div class="robot-name">{{ selectedRobot.head.title }}
         <span class="sale" v-show="selectedRobot.head.onSale">sale!</span>
       </div>
-      <PartSelector :parts="availableParts.heads" position="top"
+      <PartSelector :parts="partStore.parts.heads" position="top"
                     @partSelected="part=>selectedRobot.head=part"/>
     </div>
     <div class="middle-row">
-      <PartSelector :parts="availableParts.arms" position="left"
+      <PartSelector :parts="partStore.parts.arms" position="left"
                     @partSelected="part=>selectedRobot.leftArm=part"/>
-      <PartSelector :parts="availableParts.torsos" position="center"
+      <PartSelector :parts="partStore.parts.torsos" position="center"
                     @partSelected="part=>selectedRobot.torso=part"/>
-      <PartSelector :parts="availableParts.arms" position="right"
+      <PartSelector :parts="partStore.parts.arms" position="right"
                     @partSelected="part=>selectedRobot.rightArm=part"/>
     </div>
     <div class="bottom-row">
-      <PartSelector :parts="availableParts.bases" position="bottom"
+      <PartSelector :parts="partStore.parts.bases" position="bottom"
                     @partSelected="part=>selectedRobot.bottom=part"/>
     </div>
-    <span v-if="cart.length>0">
-    <h1>Cart</h1>
-    <table>
-      <thead>
-      <tr>
-        <th>#</th>
-        <th>Robot</th>
-        <th class="cost">Cost</th>
-      </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(robot,index) in cart" :key="index">
-          <td>{{ index }}</td>
-          <td>{{ robot.head.title }}</td>
-          <td class="cost">{{ toCurrency(robot.cost) }}</td>
-        </tr>
-      </tbody>
-    </table>
-      </span>
+    <h3> Last Robot cost: {{ toCurrency(cartStore.lastRobotCost) }}</h3>
   </div>
 
 </template>

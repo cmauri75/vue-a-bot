@@ -27,10 +27,12 @@ export default {
 <template>
   <main>
     <div>
-      {{ user.username }} you can:
+      {{ user.username }} you can: [
       <router-link :to="{name:'Home'}" class="nav-link" active-class="home-active">Home</router-link> -
       <router-link :to="{name:'Build'}" class="nav-link">Build robot</router-link> -
-      <router-link :to="{name:'Search'}" class="nav-link">Search</router-link>
+      <router-link :to="{name:'Search'}" class="nav-link">Search</router-link> -
+      <router-link :to="{name:'Cart'}" class="nav-link cart">Cart</router-link>
+      ]
     </div>
     <!-- <HomepageGlobal msg="Global Robobuilder"/> -->
     <!-- <RobotBuilder/> -->
@@ -53,12 +55,18 @@ body {
 main {
   margin: 0 auto;
   padding: 30px;
-  background-color: white;
+  background-color: gray;
 }
 
 .nav-link {
   text-decoration: none;
   color: inherit;
+}
+
+.nav-item.cart {
+  position: relative;
+  margin-left: auto;
+  border-right: none;
 }
 
 .router-link-active {

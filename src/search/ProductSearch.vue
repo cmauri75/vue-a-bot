@@ -38,8 +38,11 @@ import useSearch from './useSearch';
 import useFilters from './useFilters';
 import usePagination from './usePagination';
 
+import {usePartStore} from "@/stores/partStore.js";
+const partStore = usePartStore();
+
 const searchTerm = ref('');
-const { searchResults } = useSearch(searchTerm);
+const { searchResults } = useSearch(searchTerm,partStore.parts);
 
 const {
   filters,

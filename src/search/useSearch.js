@@ -1,7 +1,6 @@
 import { computed, onMounted } from 'vue';
-import parts from '../data/parts';
 
-export default function useSearch(searchTerm) {
+export default function useSearch(searchTerm, parts) {
   const allParts = [...parts.heads, ...parts.arms, ...parts.torsos, ...parts.bases];
 
   const results = computed(() => {

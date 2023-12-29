@@ -1,4 +1,5 @@
 export function toCurrency(amount) {
+  if (!amount) return 'undefined';
   return `€ ${amount.toFixed(2)}`;
 }
 

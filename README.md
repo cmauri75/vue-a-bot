@@ -97,7 +97,30 @@ Il routing server per navigare tra varie pagine, cambiando l'url nel browser.
   * Posso anche passare i parametri come props ("props: true" in dichiarazione) semplificandone l'utilizzo via "defineProps"
 * Nell'url tutto ciò che va dopo lo # non viene inviato al server ma gestito lato client. Questo ha un side-effect con la SEO, se uso in setup createWebHistory ho url tradizionali.
   * Il metodo tradizionale per funzionare ha bisogno che in fase di prod il server (nginx, apache, ...) torni sempre il contenuto di "/" a prescindere dall'url richiesto.
-* 
+
+## State management
+Lo strumento raccomandato per la gestione dello stato è Pinia. Un'alternativa è Vuex.
+* Ho diversi tipi di stato:
+  * Local: le variabili di stato interne ad un componente (ae: menu aperto/chiuso)
+  * Shared: variabili condivise tra più componenti (ae: il carrello) --> qui uso lo state manager
+  * Server: risiedono su servizi esterni (ae: account utente)
+* Per utilizzarla devo dichiararne l'uso nel main.js, quindi definisco gli store che voglio utilizzare in una dir stores (as: useCartStore, come da naming convention) e lo esporto, così che qualsiasi componente lo possa utilizzare. 
+  * NB: non serve usare .value, ci pensa Pinia a unboxare
+  * NB: posso modificare lo stato direttamente tramite ae push su array, una volta che ho recuperato il reference.
+  * NBB: Usa sempre il cartStore per accedere alle proprietà e non usare oggetti di supporto intermedi, altrimenti potresti rompere la reattività ae riassegnando la variabile non cambi il valore nello store ma solo nella var locale.
+    * Se proprio vuoi farlo si può usare la "storeToRefs" di Pinia, poi però dovrà usare ".value" per accedere ai valori.
+* Pinia fornisce due modalità di utilizzo, con sintassi leggermente differenti:
+  * Option Store, se uso le OptionAPI, dentro cui trovo
+    * States: sono i dati
+    * Actions: i metodi per modificare i dati
+    * Getters: metodi per recuperare viste sui dati (come coi computed)
+  * Setup Store, nel caso delle CompositionAPI, in cui ho rispettivamente:
+    * Properties
+    * Methods
+    * Computed
+* Pinia è utile anche per eseguire il fetch di dati da una API
+  * NDA: per il fetch locale ho creato un server con express, per evitare problemi di cors ho usato il proxy in vite.config.js
+
 ## Project Setup
 
 ```sh
