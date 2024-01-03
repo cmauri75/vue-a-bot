@@ -17,9 +17,7 @@ const selectedPartIndex = ref(0);
 const selectedPart = computed(() => props.parts[selectedPartIndex.value]);
 emit('partSelected', selectedPart);
 
-
 onUpdated(() => {
-  console.log(selectedPart);
   emit('partSelected', selectedPart)
 });
 

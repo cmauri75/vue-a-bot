@@ -3,6 +3,9 @@ import {computed} from "vue";
 //import parts from "@/data/parts.js";
 //import {useRoute} from "vue-router";
 
+import {usePartStore} from "@/stores/partStore.js";
+const partStore = usePartStore();
+
 const props = defineProps(['partType','id'])
 const part = computed(() => {
 /*
@@ -13,7 +16,8 @@ const part = computed(() => {
   return part;
 */
 
-  return parts[props.partType].find(part => part.id === +props.id);
+  //+ converts from string to int
+  return partStore.parts[props.partType].find(part => part.id === +props.id);
 })
 </script>
 
