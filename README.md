@@ -121,6 +121,27 @@ Lo strumento raccomandato per la gestione dello stato è Pinia. Un'alternativa �
 * Pinia è utile anche per eseguire il fetch di dati da una API
   * NDA: per il fetch locale ho creato un server con express, per evitare problemi di cors ho usato il proxy in vite.config.js
 
+## Custom directives
+Posso creare direttive custom (tipo la build-in v-if) da riutilizzare nei miei componenti.
+* Per convenzione le chiamo v-XXXXX, si costruisce creand un js (XXXX-directive.js) con un metodo di default che si aggancia al mount.
+  * Ho element come parametro che è il tag stesso, quindi posso manipolarlo a piacere (vedi v-pin)
+  * Per usarlo devo importarlo dandogli lo stesso nome del tag, ma camelcase (es: vPin)
+* Posso passare parametri usando i modifiers. Si usano aggiungendo dopo il tag .MOD1.MOD2... e così via. Li ricevo tramite il parametro "binding" che contiene la proprietà "modifiers"
+* Un secondo metodo, meno espressivo ma più flessibile, è l'utilizzo dei binding, ossia dei parametri da dare al valore del tag sotto forma di oggetto. Ho sempre il binding ma uso "value"
+  * NB: in questo modo eventuali modifiche non vengono applicate se cambia qualcosa in quanto mi sono agganciato al mounted, se mi serve posso usare l'updated
+  * Ho anche, ma molto meno usate di mounted e updated:
+    * "created" invocato quando è stato creato il padre ma non ho ancora agganciato gli attributi
+    * "beforeMound" prima di essere agganciato al DOM
+    * "beforeUpdate" prima di eseguire eventuali modifiche
+    * "beforeUmount" quando rimuovo il parent element dal dom
+    * "unounted" dopo che l'ho rimosso
+  * Ho anche una sintassi più concisa che invoca l'update. Rimuovo "updated: (element, binding)" ed esporto direttamente una funzione coi due parametri, semplificando la sintassi
+* Se la mia direttiva è molto utilizzata posso dichiararla globalmente al posto di importarla in ogni elemento
+  * la importo nel main.js e prima del mount uso ".directive('XXX',direttiva_imoportata)" facendo attenzione a non includere "v-"
+
+## Deploy app in produzione
+
+
 ## Project Setup
 
 ```sh
