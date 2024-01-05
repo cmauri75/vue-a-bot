@@ -5,6 +5,9 @@ defineProps({
     required: true
   }
 })
+
+const envMsg = import.meta.env.VITE_APP_TEST;
+console.log('VITE_APP_TEST: '+envMsg);
 </script>
 
 <template>
@@ -12,7 +15,7 @@ defineProps({
     <h1 class="green">{{ msg }}</h1>
   </div>
   <div class="green">
-    <router-link to="/build">Get started</router-link>
+    <router-link to="/build">Get started on {{envMsg}}</router-link>
   </div>
 </template>
 

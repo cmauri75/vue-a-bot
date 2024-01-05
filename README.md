@@ -62,7 +62,7 @@ Due visibilità:
 
 ### Styling
 * style scoped --> Gli stili possono essere scoped e allora si applicano solo all'interno del componente, se non specifico sono globali ma non dovrebbe essere mai usato se non nel componente padre che include gli altri
-* >>> --> Ad uno stile scoped posso aggiungere >>> questo si chiama deep selector e permette di estendere lo stile anche ai figli
+* ``>>>`` --> Ad uno stile scoped posso aggiungere ``>>>`` questo si chiama deep selector e permette di estendere lo stile anche ai figli
 * :style="" --> Posso assegnare stili in modo dinamico con :style="", all'interno posso mettere javascript o meglio una computed property. 
 * :class --> Con :class={ 'classe': booleanFunction} posso assegnare dinamicamente uno stile. Posso anche passare un array con gli stili da applicare.
 * v-bind --> lo aggiungo direttamente nello stile in modo da modificare i css 
@@ -140,7 +140,14 @@ Posso creare direttive custom (tipo la build-in v-if) da riutilizzare nei miei c
   * la importo nel main.js e prima del mount uso ".directive('XXX',direttiva_imoportata)" facendo attenzione a non includere "v-"
 
 ## Deploy app in produzione
-
+* Basta invocare ```npm run build``` questo creerà una directory "dist" che posso servire come plain html app.
+* default è equivalente a usare ```npm run build -- --mode=production```, ma posso usare modi differenti:
+  * --node=XXX: posso creare dei modi custom con le ottimizzazioni di prod ma magari da usare in staging per test. Mi basta creare file .env.XXX con gli env specifici per quella versione. 
+  * in sviluppo il modo è "development". Posso accedere agli env tramite "process.env.VITE_APP_YYYY"
+  * NB! Le chiavi devono tutte iniziare per "VITE_APP_". Questo per maggiore sicurezza.
+  * il file .env viene caricato in tutti i modi
+  * Ho anche il rispettivo process.env.VUE_APP_YYY usabile se non usi vite ma vue_cli
+* Se ho bisogno di servire un singolo url (es: /) devo usare il createwebhash nel router, così da avere un solo url. A questo 
 
 ## Project Setup
 
