@@ -37,7 +37,9 @@ export default {
     <!-- <HomepageGlobal msg="Global Robobuilder"/> -->
     <!-- <RobotBuilder/> -->
     <!-- <ProductSearch /> -->
-    <router-view/>
+    <Suspense>
+      <router-view/>
+    </Suspense>
   </main>
 
 </template>

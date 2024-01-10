@@ -7,10 +7,11 @@ import PartSelector from "@/build/PartSelector.vue";
 import {toCurrency} from "@/shared/formatters.js";
 
 import {usePartStore} from "@/stores/partStore.js";
-const partStore = usePartStore();
-partStore.getParts();
-
 import {useCartStore} from "@/stores/cartStore.js";
+
+const partStore = usePartStore();
+await partStore.getParts();
+
 const cartStore = useCartStore();
 
 const selectedRobot = ref(({
@@ -34,8 +35,9 @@ function addToCart() {
 
 console.log("component created");
 </script>
-
 <template>
+  <div>Number of heads: {{ partStore.parts ? partStore.parts.heads.length : "n/d" }}</div>
+
   <div class="content" v-if="partStore.parts">
     <div class="preview">
       <CollapsableSection>

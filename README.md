@@ -121,6 +121,59 @@ Lo strumento raccomandato per la gestione dello stato è Pinia. Un'alternativa �
 * Pinia è utile anche per eseguire il fetch di dati da una API
   * NDA: per il fetch locale ho creato un server con express, per evitare problemi di cors ho usato il proxy in vite.config.js
 
+### Advance state management
+* Devo fare attenzione a non rompere la reattività quando uso lo store ad esempio in questo modo:
+  * ```
+      cart = useCartstore().cart;
+      cartTotal = userCartStore().cartTotal;
+    ```
+    In questo caso se assegno qualcosa a cart questo sovrascriverà la variabile locale, quindi se ci faccio un push non aggiornerò lo stato
+    Con "cartTotal" (è un computed) il problema si ha perchè pinia mi fa l'unrefering del ref, quindi valorizza solo la prima volta il campo e se varia non ho aggiornamenti
+    (NB: nel secondo caso credo si possa risolvere usando "ref()" ma non ho testato)
+    Posso utilizzare sempre "useCartstore().xxx" quando devo utilizzare l'oggetto oppure posso comunque usare variabili usando il metodo "destructed values" di Pinia:
+    ```
+      import {storeToRefs} from 'pinia;
+      let {cart,cartTotal} = storeToRefs(userCartStore());
+    ```
+    Questo mi torna i ref alle variabili, così mantengo la reattività. Ora però ho ref, quindi devo posporre ".value" quando li utilizzo.
+  * Se ho un array in uno store posso mutarlo direttamente tramite un push
+    ```
+      cartStore.cart.push({...product});
+    ```
+    oppure posso usare il "patch"
+    ```
+    const newCart = [...cartStore.cart, product]
+    cartStore.$patch({
+      cart: newCart
+    });
+    
+    oppure
+    
+    cartStore.$patch((state) => {
+      state.cart.push({...product});
+    });
+    ```
+    il primo è equivalente a ``cartStore.cart = newCart`` con la differenza che posso aggiornare atomicamente più proprietà nello stesso store ed è più esplicativo.
+  *  Se recupero dati da servizi rest devo eseguire call asincrone, quindi il rendering deve poter prevedere che i dati non siano ancora aggiornati, magari con un v-if che nasconde un elemento e mostra una "waiting..."
+    * Posso anche decidere di non montare del tutto un componente sino a che non ho tutti i dati pronti
+      1. Aggiungo un await prima della chiamata alla "partStore.getParts()"
+      2. Wrappo l'utilizzo del componente (nella pagina padre) all'interno del tag <Suspense>, così il rendering dello stesso avverrà solo al termine dell'await.
+* Quando uso store multipli devo far attenzione alle invocazioni cicliche:
+  * Una funzione non può chiamarne un'altra che la richiama a sua volta, ovviamente
+  * Due store possono chiamarsi reciprocamente ma solo internamente ad un metodo, non posso fare chiamate direttamente dal setup method (il main)
+    * Posso usare "const cartStore = useCartStore;" nella setup function e poi usare cartStore nelle closure successive, ma non ad esempio faccio console.log(cartStore) ritorna undefined, lo store è broken. 
+    * Altra regola importante è che all'interno di funzioni che fanno chiamate asincrone devo eseguire le chiamate a store esterni PRIMA della call e mai dopo, asltrimenti potrei usare una istanza di Pinia errata.
+* Gli store sono ideali anche per contenere la business logic lo faccio dichiarando funzioni che lavorano su quello store (service vicini ai dao)
+  * In questo modo posso evitare di esportare lo stato interno, ma solo i metodi per operarci (Setter) e le computed per accederci (getter). 
+    * Attenzione: se non esporto lo stato potrei non triggerare mutation nei plugin a seguito di modifiche interne.
+  * NB: se recupero i componenti dallo store usando il ref destructuring ( let {a,b,c} = storeToRef(cartStore)) posso farlo solo per gli state e le computed properties, non posso recuperare anche le action.
+* Se cambio un template ho l'hot replacement, questo però non è abilitato di default per gli store pinia, posso farlo store per store usando il codice sottostante, in fondo al js che dichiara lo store:
+  ```
+  if (import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(cartStore, import.meta.hot))
+  }
+  ```
+
 ## Custom directives
 Posso creare direttive custom (tipo la build-in v-if) da riutilizzare nei miei componenti.
 * Per convenzione le chiamo v-XXXXX, si costruisce creand un js (XXXX-directive.js) con un metodo di default che si aggancia al mount.

@@ -5,6 +5,7 @@ const app = express();
 
 app.get('/api/parts', (req, res) => {
   console.log("retreiving parts");
+  setTimeout( () =>
     res.send({
       heads: [
         {
@@ -165,7 +166,7 @@ app.get('/api/parts', (req, res) => {
           cost: 700.5
         }
       ]
-    })
+    }), 500);
   }
 );
 

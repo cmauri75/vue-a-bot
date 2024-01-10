@@ -5,7 +5,7 @@ import ProductSearch from "@/search/ProductSearch.vue";
 import Partinfo from "@/parts/Partinfo.vue";
 import ShoppingCart from "@/cart/ShoppingCart.vue";
 
-export default createRouter({
+const router= createRouter({
   routes: [
     {
       path: '/',
@@ -38,3 +38,5 @@ export default createRouter({
   ],
   history: createWebHistory()
 });
+
+export default router;
