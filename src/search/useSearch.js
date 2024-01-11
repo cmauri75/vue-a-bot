@@ -3,7 +3,7 @@ import {usePartStore} from "@/stores/partStore.js";
 
 export default function useSearch(searchTerm, parts) {
   const partStore = usePartStore();
-  partStore.getParts();
+  //partStore.getParts();
 
   //NB: getParts is async, so you should wait for data ready and so allParts should be a computed
   const allParts = computed(() =>

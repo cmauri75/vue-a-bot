@@ -173,6 +173,18 @@ Lo strumento raccomandato per la gestione dello stato è Pinia. Un'alternativa �
     import.meta.hot.accept(acceptHMRUpdate(cartStore, import.meta.hot))
   }
   ```
+### Pinia plugin
+* Se necessario posso sottoscrivermi a modifiche all'interno di uno store tramite: "myStore.$onAction((name,store,args,after, onError) => {}) la funzione viene invocata prima dell'azione
+  * All'interno posso anche specificare onError() e after() che verranno eseguiti nei rispettivi casi. Posso così ae settare un flag e resettarlo al termine dell'esecuzione
+  * Inoltre posso anche specificare un metodo $subscribe che si sottoscrive ad ogni modifica di stato
+* I metodi di sopra vanno specificati store per store, posso però creare un plug-in che si applica a tutti gli store contemporaneamente.
+  * Creo un file "local-storage-plugin.js", qui posso usare la keyword store che ciclerà su tutti quelli disponibili. Va aggiungo all'oggetto pinia in fase di dichiarazione.
+  * Questo metodo può tornare un oggetto con delle proprietà, queste verranno aggiunte a tutti gli store
+* Quando creo uno store ho un terzo parametro, le option. All'interno posso mettere oggetti a piacere.
+  * Queste opzioni sono accessibili ai plugin che possono usarle per customizzare il proprio comportamento in base allo store su cui stanno operando.
+* Per aggiungere funzionalità a Pinia posso usare, oltre ai plugin che si basano sull'augmentation, i composable, che utilizzano la composition. Sono concetti non specifici di Pinia
+  * Sono le funzioni che iniziano per "use", ae: useLocalStorage 
+  * Si utilizzano installando con @vueuse/core, 
 
 ## Custom directives
 Posso creare direttive custom (tipo la build-in v-if) da riutilizzare nei miei componenti.

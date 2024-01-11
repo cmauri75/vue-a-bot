@@ -37,6 +37,7 @@ console.log("component created");
 </script>
 <template>
   <div>Number of heads: {{ partStore.parts ? partStore.parts.heads.length : "n/d" }}</div>
+  <div>version: {{ partStore.getVersion() }}</div>
 
   <div class="content" v-if="partStore.parts">
     <div class="preview">
